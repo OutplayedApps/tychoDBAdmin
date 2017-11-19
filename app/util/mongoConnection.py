@@ -15,6 +15,19 @@ def convertToList(queryResults):
         results.append(i)
     return results
 
+def fixQuery(query):
+    for k, v in query.items():
+        if k != 'questionNum':
+            try:
+                v = int(v)
+            except ValueError:
+                pass  # it was a string, not an int.
+        if v:
+            query[k] = v
+        else:
+            query.pop(k, None)
+    return query
+
 class MongoConnection(object):
     def __init__(self):
         client = mongoClient
@@ -24,14 +37,25 @@ class MongoConnection(object):
         self.collection = self.db[name]
 
 class QuestionsCollection(MongoConnection):
+    #vendorNum - string
+    #packetNum - int
+    #setNum - int
+    #questionNum - string
+
     def __init__(self):
        super(QuestionsCollection, self).__init__()
        self.get_collection('questions')
 
-    def getQuestionList(self, **kwargs):
-        """Returns a list of questions
+    def getQuestionList(self, query = None, **kwargs):
+        """Returns a list of questions sorted by json query.
         """
-        results = self.collection.find().limit (100)
+        
+        if query is None:
+            query = {}
+        else:
+            query = fixQuery(query)
+        print str(query)
+        results = self.collection.find(query).limit (100)
         return convertToList(results)
         #centerId = kwargs['center'].pk
         #queryResults = self.collection.find({"center": centerId}, {"name": 1} );

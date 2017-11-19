@@ -29,15 +29,16 @@ class QuestionListView(TemplateView):
     template_name = "app/list.html"
     def get_context_data(self, **kwargs):
         context = super(QuestionListView, self).get_context_data(**kwargs)
-        questionsCollection = QuestionsCollection()
-        context['questions'] = dumps(questionsCollection.getQuestionList())
+        #questionsCollection = QuestionsCollection()
+        #context['questions'] = dumps(questionsCollection.getQuestionList())
         #context['latest_articles'] = Article.objects.all()[:5]
         return context
 
 class QuestionsAPI(Resource):
 
     def get(self, request):
-        questions = QuestionsCollection().getQuestionList()
+        queryParams = request.GET.dict()
+        questions = QuestionsCollection().getQuestionList(queryParams)
         return HttpResponse(dumps(questions), content_type = 'application/json', status = 200)
 
     def post(self, request):
