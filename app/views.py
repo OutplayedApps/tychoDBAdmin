@@ -7,6 +7,7 @@ from django.http import HttpRequest
 from django.template import RequestContext
 from datetime import datetime
 from  django.views.generic.base import TemplateView
+from util.mongoConnection import QuestionsCollection
 
 def home(request):
     """Renders the home page."""

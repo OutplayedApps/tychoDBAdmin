@@ -9,7 +9,6 @@ mongoClient = MongoClient(uri)
 print "=== initializing mongo client ==="
 
 class MongoConnection(object):
-
     def __init__(self):
         client = mongoClient
         self.db = client['tycho']
