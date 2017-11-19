@@ -1,6 +1,13 @@
 $(function() {
+    var FIELD_TEXTAREA = {
+        type: "textarea",
+        itemTemplate: function(value, item) {
+            return '<div style="height:40px; overflow:hidden">' + value + '</div>';
+        }
+    };
+
     $("#jsGrid").jsGrid({
-        height: "50%",
+        height: "500px",
         width: "100%",
         filtering: true,
         inserting: true,
@@ -20,7 +27,10 @@ $(function() {
                     data: filter
                 }).done(function(result) {
                     d.resolve($.map(result, function(item) {
-                        return $.extend(item.fields, { id: item.pk });
+                        console.log(item);
+                        return item;
+                        
+                        return $.extend(item.fields, { id: item.id["_$oid"] });
                     }));
                 });
                 return d.promise();
@@ -47,10 +57,15 @@ $(function() {
             }
         },
         fields: [
-            { name: "tossupQ", type: "text", width: 150 },
-            { name: "tossupA", type: "text", width: 150 },
-            { name: "bonusQ", type: "text", width: 150 },
-            { name: "bonusA", type: "text", width: 150 },
+            { name: "category", type: "text" },
+            { name: "vendorNum", type: "text" },
+            { name: "setNum", type: "text" },
+            { name: "packetNum", type: "text" },
+            { name: "questionNum", type: "text" },
+            $.extend({ name: "tossupQ" }, FIELD_TEXTAREA),
+            $.extend({ name: "tossupA" }, FIELD_TEXTAREA),
+            $.extend({ name: "bonusQ" }, FIELD_TEXTAREA),
+            $.extend({ name: "bonusA" }, FIELD_TEXTAREA),
             { type: "control" }
         ]
     });
