@@ -12,6 +12,7 @@ from bson.json_util import dumps
 from django.core import serializers
 from simple_rest import Resource
 from django.http import HttpResponse
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 def home(request):
     """Renders the home page."""
@@ -24,7 +25,7 @@ def home(request):
         }
     )
 
-class QuestionListView(TemplateView):
+class QuestionListView(LoginRequiredMixin, TemplateView):
     template_name = "app/list.html"
     def get_context_data(self, **kwargs):
         context = super(QuestionListView, self).get_context_data(**kwargs)
@@ -33,7 +34,7 @@ class QuestionListView(TemplateView):
         #context['latest_articles'] = Article.objects.all()[:5]
         return context
 
-class QuestionsAPI(Resource):
+class QuestionsAPI(LoginRequiredMixin, Resource):
 
     def get(self, request):
         queryParams = request.GET.dict()
