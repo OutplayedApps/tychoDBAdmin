@@ -45,23 +45,23 @@ $(function() {
             updateItem: function(item) {
                 return $.ajax({
                     type: "PUT",
-                    url: "/api/" + item.id,
+                    url: "/api/" + item["id"]["$oid"],
                     data: item
                 });
             },
             deleteItem: function(item) {
                 return $.ajax({
                     type: "DELETE",
-                    url: "/api/" + item.id
+                    url: "/api/" + item["id"]["$oid"]
                 });
             }
         },
         fields: [
-            { name: "category", type: "text" },
             { name: "vendorNum", type: "text" },
             { name: "setNum", type: "text" },
             { name: "packetNum", type: "text" },
             { name: "questionNum", type: "text" },
+            { name: "category", type: "text" },
             $.extend({ name: "tossupQ" }, FIELD_TEXTAREA),
             $.extend({ name: "tossupA" }, FIELD_TEXTAREA),
             $.extend({ name: "bonusQ" }, FIELD_TEXTAREA),

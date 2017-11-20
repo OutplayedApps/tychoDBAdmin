@@ -14,5 +14,6 @@ urlpatterns = [
     # Examples:
     url(r'^list/', QuestionListView.as_view(), name='list'),
     url(r'^api/?$', QuestionsAPI.as_view()),
+    url(r'^api/(?P<id>[a-z0-9]+)?$', QuestionsAPI.as_view()),
     url(r'^$', app.views.home, name='home')
 ]

@@ -22,7 +22,10 @@ def fixQuery(query):
                 v = int(v)
             except ValueError:
                 pass  # it was a string, not an int.
-        if v:
+        if v and k in ["tossupQ", "tossupA", "bonusQ", "bonusA"]:
+            # search for CONTAINING this string.
+            query[k] = {"$regex" : v}
+        elif v:
             query[k] = v
         else:
             query.pop(k, None)
@@ -49,20 +52,29 @@ class QuestionsCollection(MongoConnection):
     def getQuestionList(self, query = None, **kwargs):
         """Returns a list of questions sorted by json query.
         """
-        
         if query is None:
             query = {}
         else:
             query = fixQuery(query)
         print str(query)
-        results = self.collection.find(query).limit (100)
+        results = self.collection.find(query).limit(100)
         return convertToList(results)
-        #centerId = kwargs['center'].pk
-        #queryResults = self.collection.find({"center": centerId}, {"name": 1} );
-
     
     def getQuestionById(self, id):
         """Gets question metadata by ID.
         """
         queryResults = self.collection.find_one({"_id": ObjectId(id)} );
-        return queryResults
+        print "==results=="
+        print queryResults
+        return [queryResults]
+    
+    def updateQuestion(self, id, question):
+        question.pop('id[$oid]', None)
+        self.collection.update_one( {"_id": ObjectId(id)}, {"$set": question} )
+        return self.getQuestionById(id)
+    
+    def addQuestion(self, question):
+        self.collection.insert_one(question)
+    
+    def deleteQuestion(self, id):
+        self.collection.delete_one({"_id": ObjectId(id) })
