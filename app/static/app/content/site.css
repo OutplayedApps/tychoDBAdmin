@@ -73,3 +73,7 @@ input[type="checkbox"].input-validation-error {
     bottom: 0;
     width: 80%;
 }
+
+.jsgrid th.jsgrid-header-cell {
+    word-wrap: break-word;
+}

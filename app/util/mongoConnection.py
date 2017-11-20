@@ -2,6 +2,7 @@ from pymongo import MongoClient
 from secret import DB_MONGO_CONN_STRING
 from bson import ObjectId
 import json
+from datetime import datetime
 
 # MongoClient is initialized only once.
 uri = DB_MONGO_CONN_STRING
@@ -17,11 +18,25 @@ def convertToList(queryResults):
 
 def fixQuery(query):
     for k, v in query.items():
-        if k != 'questionNum':
-            try:
-                v = int(v)
-            except ValueError:
-                pass  # it was a string, not an int.
+        try:
+            v = int(v)
+        except ValueError:
+            pass  # it was a string, not an int.
+        if v and k in ["tossupQ", "tossupA", "bonusQ", "bonusA"]:
+            # search for CONTAINING this string.
+            query[k] = {"$regex" : v}
+        elif v:
+            query[k] = v
+        else:
+            query.pop(k, None)
+    return query
+
+def fixData(query):
+    for k, v in query.items():
+        try:
+            v = int(v)
+        except ValueError:
+            pass  # it was a string, not an int.
         if v and k in ["tossupQ", "tossupA", "bonusQ", "bonusA"]:
             # search for CONTAINING this string.
             query[k] = {"$regex" : v}
@@ -64,17 +79,20 @@ class QuestionsCollection(MongoConnection):
         """Gets question metadata by ID.
         """
         queryResults = self.collection.find_one({"_id": ObjectId(id)} );
-        print "==results=="
-        print queryResults
-        return [queryResults]
+        return queryResults
     
     def updateQuestion(self, id, question):
         question.pop('id[$oid]', None)
+        question['date_modified'] = datetime.now().isoformat()
         self.collection.update_one( {"_id": ObjectId(id)}, {"$set": question} )
-        return self.getQuestionById(id)
+        return id
     
     def addQuestion(self, question):
-        self.collection.insert_one(question)
+        question['date_created'] = datetime.now().isoformat()
+        question['date_modified'] = question['date_created']
+        result = self.collection.insert_one(question)
+        
+        return result.inserted_id
     
     def deleteQuestion(self, id):
         self.collection.delete_one({"_id": ObjectId(id) })

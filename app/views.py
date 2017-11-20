@@ -44,20 +44,22 @@ class QuestionsAPI(Resource):
     def post(self, request):
         # create.
         queryParams = request.POST.dict()
-        QuestionsCollection().addQuestion(queryParams)
-        return HttpResponse(status = 201)
+        questionsCollection = QuestionsCollection()
+        id = questionsCollection.addQuestion(queryParams)
+        newQuestion = questionsCollection.getQuestionById(id)
+        return self.to_json(newQuestion)
 
     def put(self, request, id):
         queryParams = request.POST.dict()
-        print id
-        print "===="
-        QuestionsCollection().updateQuestion(id, queryParams)
-        return HttpResponse(status = 200)
+        questionsCollection = QuestionsCollection()
+        questionsCollection.updateQuestion(id, queryParams)
+        updatedQuestion = questionsCollection.getQuestionById(id)
+        return self.to_json(updatedQuestion)
 
     def delete(self, request, id):
         queryParams = request.POST.dict()
         QuestionsCollection().deleteQuestion(id)
         return HttpResponse(status = 200)
 
-    #def to_json(self, objects):
-    #    return serializers.serialize('json', objects)
+    def to_json(self, obj):
+        return HttpResponse(dumps(obj), content_type = 'application/json', status = 200)

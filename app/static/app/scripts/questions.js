@@ -5,6 +5,7 @@ $(function() {
             return '<div style="height:40px; overflow:hidden">' + value + '</div>';
         }
     };
+    var NUM_WIDTH = 40;
 
     $("#jsGrid").jsGrid({
         height: "500px",
@@ -57,15 +58,17 @@ $(function() {
             }
         },
         fields: [
-            { name: "vendorNum", type: "text" },
-            { name: "setNum", type: "text" },
-            { name: "packetNum", type: "text" },
-            { name: "questionNum", type: "text" },
-            { name: "category", type: "text" },
+            { name: "vendorNum", type: "text", width: NUM_WIDTH },
+            { name: "setNum", type: "text", width: NUM_WIDTH },
+            { name: "packetNum", type: "text", width: NUM_WIDTH },
+            { name: "questionNum", type: "text", width: NUM_WIDTH },
+            { name: "category", type: "text", width: NUM_WIDTH },
             $.extend({ name: "tossupQ" }, FIELD_TEXTAREA),
             $.extend({ name: "tossupA" }, FIELD_TEXTAREA),
             $.extend({ name: "bonusQ" }, FIELD_TEXTAREA),
             $.extend({ name: "bonusA" }, FIELD_TEXTAREA),
+            { name: "date_modified", type: "text"},
+            { name: "date_created", type: "text" },
             { type: "control" }
         ]
     });
