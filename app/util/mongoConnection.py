@@ -1,8 +1,12 @@
 from pymongo import MongoClient
-from secret import DB_MONGO_CONN_STRING
 from bson import ObjectId
 import json
 from datetime import datetime
+
+try:
+    from secret import DB_MONGO_CONN_STRING
+except ImportError:
+    DB_MONGO_CONN_STRING = os.environ.get('DB_MONGO_CONN_STRING', '')
 
 # MongoClient is initialized only once.
 uri = DB_MONGO_CONN_STRING
