@@ -13,6 +13,8 @@ from django.core import serializers
 from simple_rest import Resource
 from django.http import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 
 def home(request):
     """Renders the home page."""
@@ -34,6 +36,7 @@ class QuestionListView(LoginRequiredMixin, TemplateView):
         #context['latest_articles'] = Article.objects.all()[:5]
         return context
 
+@method_decorator(csrf_exempt, name='dispatch')
 class QuestionsAPI(LoginRequiredMixin, Resource):
 
     def get(self, request):
